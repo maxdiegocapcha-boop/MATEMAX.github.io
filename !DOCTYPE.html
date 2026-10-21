@@ -1,0 +1,1367 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ExpoLab Matemático: Descubre el cambio exponencial</title>
+    <style>
+        :root {
+            --primary: #1e3a8a;
+            --primary-light: #3b82f6;
+            --secondary: #0d9488;
+            --accent: #f59e0b;
+            --bg-color: #f8fafc;
+            --card-bg: #ffffff;
+            --text-main: #1e293b;
+            --text-muted: #64748b;
+            --border: #cbd5e1;
+            --success: #10b981;
+            --error: #ef4444;
+            --warning: #f59e0b;
+            --radius: 12px;
+            --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            line-height: 1.6;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        header {
+            background: linear-gradient(135deg, var(--primary), var(--primary-light));
+            color: white;
+            padding: 24px;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            margin-bottom: 24px;
+            text-align: center;
+        }
+
+        header h1 {
+            font-size: 1.8rem;
+            margin-bottom: 8px;
+        }
+
+        header p {
+            font-size: 1rem;
+            opacity: 0.9;
+        }
+
+        .badge-cneb {
+            display: inline-block;
+            background: rgba(255, 255, 255, 0.2);
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            margin-top: 10px;
+            font-weight: 500;
+        }
+
+        .progress-bar-container {
+            background: #e2e8f0;
+            border-radius: 10px;
+            height: 12px;
+            margin-bottom: 24px;
+            overflow: hidden;
+            box-shadow: inset 0 1px 3px rgba(0,0,0,0.1);
+        }
+
+        .progress-bar {
+            background: var(--secondary);
+            height: 100%;
+            width: 0%;
+            transition: width 0.4s ease;
+        }
+
+        .stats-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: white;
+            padding: 12px 20px;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            margin-bottom: 24px;
+            font-weight: 600;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .nav-challenges {
+            display: flex;
+            gap: 6px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .nav-pill {
+            background: white;
+            border: 1px solid var(--border);
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            color: var(--text-muted);
+        }
+
+        .nav-pill.active {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+        }
+
+        .nav-pill.completed {
+            border-color: var(--success);
+            color: var(--success);
+        }
+
+        .nav-pill.completed.active {
+            background: var(--success);
+            color: white;
+        }
+
+        .nav-pill.partial {
+            border-color: var(--warning);
+            color: var(--warning);
+        }
+
+        .nav-pill.partial.active {
+            background: var(--warning);
+            color: white;
+        }
+
+        .card, .summary-card {
+            background: var(--card-bg);
+            border-radius: var(--radius);
+            padding: 28px;
+            box-shadow: var(--shadow);
+            margin-bottom: 24px;
+            display: none;
+        }
+
+        .card.active, .summary-card.active {
+            display: block;
+            animation: fadeIn 0.4s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .challenge-title {
+            font-size: 1.3rem;
+            color: var(--primary);
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .challenge-desc {
+            margin-bottom: 20px;
+            color: var(--text-muted);
+            font-size: 0.95rem;
+        }
+
+        .interactive-area {
+            background: #f1f5f9;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            border: 1px solid var(--border);
+        }
+
+        .table-responsive {
+            width: 100%;
+            overflow-x: auto;
+            margin: 15px 0;
+        }
+
+        table.math-table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+            min-width: 500px;
+        }
+
+        table.math-table th, table.math-table td {
+            border: 1px solid var(--border);
+            padding: 10px 12px;
+            text-align: center;
+        }
+
+        table.math-table th {
+            background: var(--primary);
+            color: white;
+            font-weight: 600;
+        }
+
+        table.math-table input {
+            width: 75px;
+            padding: 6px;
+            text-align: center;
+            border: 1px solid var(--border);
+            border-radius: 4px;
+            font-size: 0.95rem;
+        }
+
+        .form-group {
+            margin-bottom: 18px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 6px;
+            font-weight: 500;
+        }
+
+        input[type="text"], input[type="number"], select {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            font-size: 1rem;
+            outline: none;
+            transition: border-color 0.2s;
+            background: white;
+        }
+
+        input[type="text"]:focus, input[type="number"]:focus, select:focus {
+            border-color: var(--primary-light);
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15);
+        }
+
+        .radio-options {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin: 15px 0;
+        }
+
+        .radio-label {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            background: white;
+            padding: 12px 16px;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .radio-label:hover {
+            border-color: var(--primary-light);
+            background: #f8fafc;
+        }
+
+        .radio-label input {
+            margin-top: 3px;
+        }
+
+        .btn {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 6px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.2s, transform 0.1s;
+        }
+
+        .btn:hover {
+            background: #1d4ed8;
+        }
+
+        .btn:active {
+            transform: scale(0.98);
+        }
+
+        .btn-secondary {
+            background: #64748b;
+        }
+
+        .btn-secondary:hover {
+            background: #475569;
+        }
+
+        .btn-danger {
+            background: #ef4444;
+        }
+
+        .btn-danger:hover {
+            background: #dc2626;
+        }
+
+        .btn-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 20px;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .feedback {
+            margin-top: 15px;
+            padding: 14px 18px;
+            border-radius: 8px;
+            font-size: 0.95rem;
+            display: none;
+        }
+
+        .feedback.success {
+            background: #ecfdf5;
+            border: 1px solid #a7f3d0;
+            color: #065f46;
+            display: block;
+        }
+
+        .feedback.error {
+            background: #fef2f2;
+            border: 1px solid #fecaca;
+            color: #991b1b;
+            display: block;
+        }
+
+        .feedback.warning {
+            background: #fffbeb;
+            border: 1px solid #fde68a;
+            color: #92400e;
+            display: block;
+        }
+
+        .graph-container {
+            text-align: center;
+            margin: 15px 0;
+            background: white;
+            padding: 10px;
+            border-radius: 8px;
+            border: 1px solid var(--border);
+            overflow-x: auto;
+        }
+
+        svg {
+            max-width: 100%;
+            height: auto;
+        }
+
+        .slider-container {
+            margin: 15px 0;
+        }
+
+        .slider-container input[type="range"] {
+            width: 100%;
+            accent-color: var(--secondary);
+            cursor: pointer;
+        }
+
+        .slider-value {
+            font-weight: bold;
+            color: var(--secondary);
+        }
+
+        .exploration-status {
+            background: #e2e8f0;
+            padding: 8px 12px;
+            border-radius: 6px;
+            font-size: 0.85rem;
+            margin-top: 10px;
+            font-weight: 500;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .summary-score {
+            font-size: 3rem;
+            font-weight: 800;
+            color: var(--primary);
+            margin: 15px 0;
+            text-align: center;
+        }
+
+        .summary-details {
+            text-align: left;
+            margin: 20px 0;
+            background: #f8fafc;
+            padding: 20px;
+            border-radius: 8px;
+            border: 1px solid var(--border);
+        }
+
+        .summary-details ul {
+            padding-left: 20px;
+            margin-top: 10px;
+        }
+
+        .summary-details li {
+            margin-bottom: 8px;
+        }
+
+        @media(max-width: 600px) {
+            body { padding: 10px; }
+            header h1 { font-size: 1.4rem; }
+            .card, .summary-card { padding: 16px; }
+            .btn-container { flex-direction: column; width: 100%; }
+            .btn-container button { width: 100%; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <header>
+        <h1>ExpoLab Matemático: Descubre el cambio exponencial</h1>
+        <p>Laboratorio interactivo para explorar, modelar y argumentar relaciones de cambio</p>
+        <div class="badge-cneb">CNEB Ciclo VII • 5.° de Secundaria • Regularidad, Equivalencia y Cambio</div>
+    </header>
+
+    <div class="nav-challenges" role="navigation" aria-label="Navegación de desafíos">
+        <button class="nav-pill active" id="pill-1" onclick="showCard(1)">1. Patrón</button>
+        <button class="nav-pill" id="pill-2" onclick="showCard(2)">2. Gráfica</button>
+        <button class="nav-pill" id="pill-3" onclick="showCard(3)">3. Error</button>
+        <button class="nav-pill" id="pill-4" onclick="showCard(4)">4. Compara</button>
+        <button class="nav-pill" id="pill-5" onclick="showCard(5)">5. Mantaro</button>
+    </div>
+
+    <div class="progress-bar-container" aria-hidden="true">
+        <div class="progress-bar" id="progressBar"></div>
+    </div>
+
+    <div class="stats-bar">
+        <span id="challengeIndicator" aria-live="polite">Desafío 1 de 5 (Pendiente)</span>
+        <span id="scoreIndicator" aria-live="polite">Puntaje: 0.0 / 20.0 pts</span>
+        <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+            <button class="btn btn-secondary" style="padding: 6px 12px; font-size: 0.85rem;" onclick="showSummary()">Ver Informe</button>
+            <button class="btn btn-danger" style="padding: 6px 12px; font-size: 0.85rem;" onclick="promptResetLab()">Reiniciar todo</button>
+        </div>
+    </div>
+
+    <!-- DESAFÍO 1 -->
+    <div class="card active" id="challenge-1">
+        <div class="challenge-title">
+            <span>🔬 Desafío 1:</span> Descubre el patrón
+        </div>
+        <div class="challenge-desc">
+            Completa la tabla de valores para f(x) = 2<sup>x</sup> (2.5 pts distribuidos en 7 casillas) y justifica el patrón multiplicativo (1.5 pts). Total: 4 pts.
+        </div>
+        <div class="interactive-area">
+            <p style="margin-bottom: 10px; font-weight: 500;">Calcula f(x) = 2<sup>x</sup> para los siguientes valores:</p>
+            <div class="table-responsive">
+                <table class="math-table">
+                    <tr>
+                        <th>x</th>
+                        <td>-3</td>
+                        <td>-2</td>
+                        <td>-1</td>
+                        <td>0</td>
+                        <td>1</td>
+                        <td>2</td>
+                        <td>3</td>
+                    </tr>
+                    <tr>
+                        <th>f(x) = 2<sup>x</sup></th>
+                        <td><input type="text" id="c1_v1" placeholder="Ej: número o fracción"></td>
+                        <td><input type="text" id="c1_v2" placeholder="Ej: número o fracción"></td>
+                        <td><input type="text" id="c1_v3" placeholder="Ej: número o fracción"></td>
+                        <td><input type="text" id="c1_v4" placeholder="Ej: número o fracción"></td>
+                        <td><input type="text" id="c1_v5" placeholder="Ej: número o fracción"></td>
+                        <td><input type="text" id="c1_v6" placeholder="Ej: número o fracción"></td>
+                        <td><input type="text" id="c1_v7" placeholder="Ej: número o fracción"></td>
+                    </tr>
+                </table>
+            </div>
+            <div class="form-group" style="margin-top: 15px;">
+                <label for="c1_q_pattern">Justifica matemáticamente qué ocurre con el valor de f(x) cuando x aumenta una unidad:</label>
+                <select id="c1_q_pattern">
+                    <option value="">Selecciona una justificación...</option>
+                    <option value="multiplica">A. El valor se multiplica por un factor constante igual a la base 2, lo que representa crecimiento multiplicativo.</option>
+                    <option value="suma">B. El valor aumenta siempre en dos unidades.</option>
+                    <option value="divide">C. El valor se divide entre cantidades variables según el signo del exponente.</option>
+                </select>
+            </div>
+        </div>
+        <div id="feedback-1" class="feedback" aria-live="polite"></div>
+        <div class="btn-container">
+            <button class="btn btn-secondary" onclick="changeChallenge(-1)" id="btn-prev-1" style="visibility: hidden;">Anterior</button>
+            <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+                <button class="btn btn-secondary" onclick="promptResetChallenge(1)">Reiniciar desafío</button>
+                <button class="btn" onclick="validateChallenge(1)">Comprobar</button>
+            </div>
+            <button class="btn btn-secondary" onclick="changeChallenge(1)">Siguiente</button>
+        </div>
+    </div>
+
+    <!-- DESAFÍO 2 -->
+    <div class="card" id="challenge-2">
+        <div class="challenge-title">
+            <span>📈 Desafío 2:</span> Explora la gráfica
+        </div>
+        <div class="challenge-desc">
+            Modifica interactivamente la base a en f(x) = a<sup>x</sup> (a > 0, a &ne; 1). Explora obligatoriamente un valor menor que 1 y otro mayor que 1 (1.5 pts). Justifica el comportamiento (2.5 pts). Total: 4 pts.
+        </div>
+        <div class="interactive-area">
+            <div class="slider-container">
+                <label for="baseSlider">Base a: <span id="baseValue" class="slider-value">2.0</span></label>
+                <input type="range" id="baseSlider" min="0.2" max="4.0" step="0.1" value="2.0" oninput="updateGraph2()">
+            </div>
+            <div class="exploration-status">
+                <span id="expStatusText">Estado de exploración: Falta explorar bases en ambos rangos.</span>
+                <span id="expBadge" style="color: var(--error); font-weight: bold;">Incompleto</span>
+            </div>
+            <div class="graph-container">
+                <svg id="svgGraph2" width="400" height="220" viewBox="0 0 400 220" role="img" aria-label="Gráfica interactiva f(x) = a^x"></svg>
+            </div>
+            <div class="form-group" style="margin-top: 15px;">
+                <label for="c2_q_behavior">¿Qué ocurre cuando la base es menor que 1 y cuando es mayor que 1?</label>
+                <select id="c2_q_behavior">
+                    <option value="">Selecciona una justificación...</option>
+                    <option value="ambos">A. Si 0 < a < 1, la función es decreciente; si a > 1, es creciente; ambas pasan por (0,1).</option>
+                    <option value="creciente">B. Toda función exponencial es creciente independientemente de su base.</option>
+                    <option value="lineal">C. Cuando la base es menor que 1, la función se vuelve lineal.</option>
+                </select>
+            </div>
+        </div>
+        <div id="feedback-2" class="feedback" aria-live="polite"></div>
+        <div class="btn-container">
+            <button class="btn btn-secondary" onclick="changeChallenge(-1)">Anterior</button>
+            <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+                <button class="btn btn-secondary" onclick="promptResetChallenge(2)">Reiniciar desafío</button>
+                <button class="btn" onclick="validateChallenge(2)">Comprobar</button>
+            </div>
+            <button class="btn btn-secondary" onclick="changeChallenge(1)">Siguiente</button>
+        </div>
+    </div>
+
+    <!-- DESAFÍO 3 -->
+    <div class="card" id="challenge-3">
+        <div class="challenge-title">
+            <span>🔍 Desafío 3:</span> Detecta el error
+        </div>
+        <div class="challenge-desc">
+            Analiza la afirmación sobre f(x) = 2<sup>x</sup>. Identifica su validez (1.5 pts) y selecciona el contraejemplo matemático adecuado (2.5 pts). Total: 4 pts.
+        </div>
+        <div class="interactive-area">
+            <div style="background: white; padding: 15px; border-radius: 8px; border-left: 4px solid var(--accent); margin-bottom: 15px;">
+                <p style="font-style: italic; font-weight: 500;">«En la función f(x) = 2<sup>x</sup>, cuando x aumenta una unidad, la función aumenta siempre en 2 unidades»</p>
+            </div>
+            <p style="margin-bottom: 10px; font-weight: 500;">¿Es correcta la afirmación?</p>
+            <div class="radio-options">
+                <label class="radio-label">
+                    <input type="radio" name="c3_valid" value="si">
+                    <span>A. Sí, porque la base es 2 y el incremento siempre es de dos unidades.</span>
+                </label>
+                <label class="radio-label">
+                    <input type="radio" name="c3_valid" value="no">
+                    <span>B. No, porque el cambio es multiplicativo y no corresponde a un incremento aditivo constante.</span>
+                </label>
+            </div>
+            <div class="form-group" style="margin-top: 15px;">
+                <label for="c3_justification">Selecciona el contraejemplo matemático que refuta la afirmación:</label>
+                <select id="c3_justification">
+                    <option value="">Selecciona un contraejemplo...</option>
+                    <option value="j1">f(1) = 2 y f(2) = 4, con diferencia 2; pero f(3) = 8, cuya diferencia respecto a f(2) es 4. Por tanto, los incrementos no son constantes.</option>
+                    <option value="j2">La función es lineal y aumenta siempre dos unidades.</option>
+                    <option value="j3">Entre f(0) = 1 y f(1) = 2 la diferencia es 1, y esa diferencia permanece constante.</option>
+                </select>
+            </div>
+        </div>
+        <div id="feedback-3" class="feedback" aria-live="polite"></div>
+        <div class="btn-container">
+            <button class="btn btn-secondary" onclick="changeChallenge(-1)">Anterior</button>
+            <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+                <button class="btn btn-secondary" onclick="promptResetChallenge(3)">Reiniciar desafío</button>
+                <button class="btn" onclick="validateChallenge(3)">Comprobar</button>
+            </div>
+            <button class="btn btn-secondary" onclick="changeChallenge(1)">Siguiente</button>
+        </div>
+    </div>
+
+    <!-- DESAFÍO 4 -->
+    <div class="card" id="challenge-4">
+        <div class="challenge-title">
+            <span>⚖️ Desafío 4:</span> Compara funciones
+        </div>
+        <div class="challenge-desc">
+            Compara f(x) = 2<sup>x</sup> y g(x) = 3<sup>x</sup>. Descripción de la comparación (2.5 pts) y cálculo de la razón g(2)/f(2) (1.5 pts). Total: 4 pts.
+        </div>
+        <div class="interactive-area">
+            <div class="graph-container">
+                <svg id="svgGraph4" width="400" height="220" viewBox="0 0 400 220" role="img" aria-label="Comparación f(x)=2^x y g(x)=3^x"></svg>
+            </div>
+            <div class="form-group" style="margin-top: 15px;">
+                <label for="c4_comp">¿Cómo se relacionan estas funciones para valores positivos, negativos y nulos de x?</label>
+                <select id="c4_comp">
+                    <option value="">Selecciona una conclusión...</option>
+                    <option value="g_crece_mas">A. Para x > 0, g(x) tiene valores mayores y crece más rápidamente; para x = 0, ambas valen 1; para x < 0, g(x) toma valores menores que f(x).</option>
+                    <option value="iguales">B. Ambas funciones tienen los mismos valores para todo x.</option>
+                    <option value="f_crece_mas">C. f(x) crece más rápidamente porque su base es menor.</option>
+                </select>
+            </div>
+            <div class="form-group" style="margin-top: 15px;">
+                <label for="c4_val_calc">Calcula la razón g(2) / f(2):</label>
+                <input type="text" id="c4_val_calc" placeholder="Ej: número o fracción">
+            </div>
+        </div>
+        <div id="feedback-4" class="feedback" aria-live="polite"></div>
+        <div class="btn-container">
+            <button class="btn btn-secondary" onclick="changeChallenge(-1)">Anterior</button>
+            <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+                <button class="btn btn-secondary" onclick="promptResetChallenge(4)">Reiniciar desafío</button>
+                <button class="btn" onclick="validateChallenge(4)">Comprobar</button>
+            </div>
+            <button class="btn btn-secondary" onclick="changeChallenge(1)">Siguiente</button>
+        </div>
+    </div>
+
+    <!-- DESAFÍO 5 -->
+    <div class="card" id="challenge-5">
+        <div class="challenge-title">
+            <span>🏫 Desafío 5:</span> Misión Valle del Mantaro
+        </div>
+        <div class="challenge-desc">
+            Institución en Huancayo: equipo de S/ 2 000 con depreciación del 20% anual. Identifica el modelo (1 pt), cálculo año 1 (1 pt), cálculo año 2 (1 pt), justificación (1 pt). Total: 4 pts.
+        </div>
+        <div class="interactive-area">
+            <div class="form-group">
+                <label for="c5_model">1. Identifica el modelo matemático V(t):</label>
+                <select id="c5_model">
+                    <option value="">Selecciona el modelo correcto...</option>
+                    <option value="m1">1. V(t) = 2000 − 400t</option>
+                    <option value="m2">2. V(t) = 2000(0.8)^t</option>
+                    <option value="m3">3. V(t) = 2000(1.2)^t</option>
+                    <option value="m4">4. V(t) = 2000(0.2)^t</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="c5_v1">2. Calcula el valor del equipo al cabo de 1 año (t = 1) en soles:</label>
+                <input type="text" id="c5_v1" placeholder="Ej: número">
+            </div>
+            <div class="form-group">
+                <label for="c5_v2">3. Calcula el valor del equipo al cabo de 2 años (t = 2) en soles:</label>
+                <input type="text" id="c5_v2" placeholder="Ej: número">
+            </div>
+            <div class="form-group">
+                <label for="c5_q_just">4. Justifica por qué la disminución en soles no es una cantidad fija cada año:</label>
+                <select id="c5_q_just">
+                    <option value="">Selecciona una justificación...</option>
+                    <option value="j_desc_porc">A. Porque cada año se calcula el 20 % sobre el valor actualizado del equipo, y no sobre su valor inicial.</option>
+                    <option value="j_lineal">B. Porque el equipo pierde exactamente S/ 400 cada año.</option>
+                    <option value="j_azar">C. Porque la disminución depende exclusivamente de factores aleatorios del mercado.</option>
+                </select>
+            </div>
+        </div>
+        <div id="feedback-5" class="feedback" aria-live="polite"></div>
+        <div class="btn-container">
+            <button class="btn btn-secondary" onclick="changeChallenge(-1)">Anterior</button>
+            <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+                <button class="btn btn-secondary" onclick="promptResetChallenge(5)">Reiniciar desafío</button>
+                <button class="btn" onclick="validateChallenge(5)">Comprobar</button>
+            </div>
+            <button class="btn" onclick="showSummary()">Ver Informe</button>
+        </div>
+    </div>
+
+    <!-- RESUMEN FINAL / INFORME -->
+    <div class="summary-card" id="summaryCard">
+        <h2>🎉 Informe Diagnóstico Individualizado y Formativo</h2>
+        <p>Evaluación detallada por componente basada en evidencias del CNEB.</p>
+        <div class="summary-score" id="finalScoreDisplay">0.0 / 20.0 pts</div>
+        <div id="pendingWarning" style="color: var(--warning); font-weight: bold; margin-bottom: 10px; display: none;">⚠️ Advertencia: Hay desafíos pendientes o en proceso. El informe muestra el diagnóstico con el progreso actual.</div>
+        <div class="summary-details">
+            <h3 style="color: var(--primary); margin-bottom: 10px;">Informe Diagnóstico Individualizado</h3>
+            <ul id="summaryList"></ul>
+        </div>
+        <div style="display: flex; gap: 10px; justify-content: center; flex-wrap: wrap;">
+            <button class="btn" onclick="closeSummary()">Continuar explorando</button>
+            <button class="btn btn-danger" onclick="promptResetLab()">Reiniciar todo</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    let currentChallenge = 1;
+    const totalChallenges = 5;
+    let lastVisitedChallenge = 1;
+
+    // Puntaje máximo histórico por componente (nunca disminuye al corregir)
+    let maxComponentScores = {
+        1: { vals: [0,0,0,0,0,0,0], pattern: 0 },
+        2: { exploration: 0, behavior: 0 },
+        3: { valid: 0, justification: 0 },
+        4: { comp: 0, calc: 0 },
+        5: { model: 0, v1: 0, v2: 0, just: 0 }
+    };
+
+    // Estadísticas detalladas de intentos y errores por componente
+    let componentStats = {
+        1: { vals: [ {tried:false, errors:0}, {tried:false, errors:0}, {tried:false, errors:0}, {tried:false, errors:0}, {tried:false, errors:0}, {tried:false, errors:0}, {tried:false, errors:0} ], pattern: {tried:false, errors:0} },
+        2: { exploration: {tried:false, errors:0}, behavior: {tried:false, errors:0} },
+        3: { valid: {tried:false, errors:0}, justification: {tried:false, errors:0} },
+        4: { comp: {tried:false, errors:0}, calc: {tried:false, errors:0} },
+        5: { model: {tried:false, errors:0}, v1: {tried:false, errors:0}, v2: {tried:false, errors:0}, just: {tried:false, errors:0} }
+    };
+
+    let challengeStats = {
+        1: { checks: 0 },
+        2: { checks: 0 },
+        3: { checks: 0 },
+        4: { checks: 0 },
+        5: { checks: 0 }
+    };
+
+    let challengeStatus = { 1: 'pendiente', 2: 'pendiente', 3: 'pendiente', 4: 'pendiente', 5: 'pendiente' };
+
+    // Exploración Desafío 2 (inicia estrictamente en false)
+    let exploredLessThan1 = false;
+    let exploredGreaterThan1 = false;
+
+    function updateNavPills() {
+        for (let i = 1; i <= 5; i++) {
+            const pill = document.getElementById(`pill-${i}`);
+            pill.className = `nav-pill ${i === currentChallenge ? 'active' : ''}`;
+            if (challengeStatus[i] === 'completado') {
+                pill.classList.add('completed');
+            } else if (challengeStatus[i] === 'en_proceso') {
+                pill.classList.add('partial');
+            }
+        }
+    }
+
+    function calculateTotalMaxScore() {
+        let total = 0;
+        for (let d = 1; d <= 5; d++) {
+            let comps = maxComponentScores[d];
+            for (let key in comps) {
+                if (Array.isArray(comps[key])) {
+                    total += comps[key].reduce((a, b) => a + b, 0);
+                } else {
+                    total += comps[key];
+                }
+            }
+        }
+        return total;
+    }
+
+    function updateProgress() {
+        let totalScore = calculateTotalMaxScore();
+        let completedCount = Object.values(challengeStatus).filter(s => s === 'completado').length;
+        
+        // 18 componentes evaluables totales
+        let totalCompsCorrect = 0;
+        // D1: 8, D2: 2, D3: 2, D4: 2, D5: 4 -> 18
+        // Verificamos estado actual de los 18 componentes
+        totalCompsCorrect += componentStats[1].vals.filter((v, idx) => maxComponentScores[1].vals[idx] > 0).length;
+        if (maxComponentScores[1].pattern > 0) totalCompsCorrect++;
+        if (maxComponentScores[2].exploration > 0) totalCompsCorrect++;
+        if (maxComponentScores[2].behavior > 0) totalCompsCorrect++;
+        if (maxComponentScores[3].valid > 0) totalCompsCorrect++;
+        if (maxComponentScores[3].justification > 0) totalCompsCorrect++;
+        if (maxComponentScores[4].comp > 0) totalCompsCorrect++;
+        if (maxComponentScores[4].calc > 0) totalCompsCorrect++;
+        if (maxComponentScores[5].model > 0) totalCompsCorrect++;
+        if (maxComponentScores[5].v1 > 0) totalCompsCorrect++;
+        if (maxComponentScores[5].v2 > 0) totalCompsCorrect++;
+        if (maxComponentScores[5].just > 0) totalCompsCorrect++;
+
+        let percent = (totalCompsCorrect / 18) * 100;
+        
+        document.getElementById('progressBar').style.width = percent + '%';
+        let statusText = challengeStatus[currentChallenge] === 'completado' ? 'Completado' : (challengeStatus[currentChallenge] === 'en_proceso' ? 'En proceso' : 'Pendiente');
+        document.getElementById('challengeIndicator').innerText = `Desafío ${currentChallenge} de ${totalChallenges} (${statusText})`;
+        document.getElementById('scoreIndicator').innerText = `Puntaje: ${totalScore.toFixed(1)} / 20.0 pts`;
+        updateNavPills();
+    }
+
+    function changeChallenge(direction) {
+        document.querySelectorAll('.card, .summary-card').forEach(c => c.classList.remove('active'));
+        currentChallenge += direction;
+        if (currentChallenge < 1) currentChallenge = 1;
+        if (currentChallenge > totalChallenges) currentChallenge = totalChallenges;
+        lastVisitedChallenge = currentChallenge;
+        document.getElementById(`challenge-${currentChallenge}`).classList.add('active');
+        updateProgress();
+    }
+
+    function showCard(cardNum) {
+        document.querySelectorAll('.card, .summary-card').forEach(c => c.classList.remove('active'));
+        currentChallenge = cardNum;
+        lastVisitedChallenge = currentChallenge;
+        document.getElementById(`challenge-${cardNum}`).classList.add('active');
+        updateProgress();
+    }
+
+    function showSummary() {
+        document.querySelectorAll('.card, .summary-card').forEach(c => c.classList.remove('active'));
+        document.getElementById('summaryCard').classList.add('active');
+        generateSummaryReport();
+    }
+
+    function closeSummary() {
+        document.getElementById('summaryCard').classList.remove('active');
+        showCard(lastVisitedChallenge);
+    }
+
+    // Gráfica Desafío 2 (Interacción real requerida, base exact a != 1 excluida por pasos discretos)
+    function updateGraph2() {
+        let slider = document.getElementById('baseSlider');
+        let a = parseFloat(slider.value);
+        
+        if (Math.abs(a - 1.0) < 0.05) {
+            if (a <= 1.0) a = 0.9;
+            else a = 1.1;
+            slider.value = a;
+        }
+
+        document.getElementById('baseValue').innerText = a.toFixed(1);
+
+        if (a < 1.0) exploredLessThan1 = true;
+        if (a > 1.0) exploredGreaterThan1 = true;
+
+        updateExplorationStatus();
+        drawExpGraph('svgGraph2', a, 'clip2');
+    }
+
+    function updateExplorationStatus() {
+        const textEl = document.getElementById('expStatusText');
+        const badgeEl = document.getElementById('expBadge');
+        if (exploredLessThan1 && exploredGreaterThan1) {
+            textEl.innerText = "Estado de exploración: ¡Bases menores y mayores que 1 exploradas!";
+            badgeEl.innerText = "Completado";
+            badgeEl.style.color = "var(--success)";
+        } else {
+            let faltan = [];
+            if (!exploredLessThan1) faltan.push("base < 1 (decaimiento)");
+            if (!exploredGreaterThan1) faltan.push("base > 1 (crecimiento)");
+            textEl.innerText = `Estado de exploración: Mueve el deslizador y explora ${faltan.join(' y ')}.`;
+            badgeEl.innerText = "Incompleto";
+            badgeEl.style.color = "var(--error)";
+        }
+    }
+
+    function drawExpGraph(svgId, a, clipId) {
+        const svg = document.getElementById(svgId);
+        svg.innerHTML = '';
+        
+        const originX = 200;
+        const originY = 170;
+        const scaleX = 40;
+        const scaleY = 35;
+
+        let axesHTML = `
+            <defs>
+                <clipPath id="${clipId}">
+                    <rect x="20" y="20" width="360" height="180"></rect>
+                </clipPath>
+            </defs>
+            <line x1="20" y1="${originY}" x2="380" y2="${originY}" stroke="#cbd5e1" stroke-width="2"/>
+            <line x1="${originX}" y1="20" x2="${originX}" y2="200" stroke="#cbd5e1" stroke-width="2"/>
+            <text x="370" y="${originY + 15}" font-size="12" fill="#64748b">x</text>
+            <text x="${originX + 10}" y="30" font-size="12" fill="#64748b">y</text>
+        `;
+
+        for (let x = -4; x <= 4; x++) {
+            if (x !== 0) {
+                let px = originX + x * scaleX;
+                axesHTML += `<line x1="${px}" y1="${originY - 4}" x2="${px}" y2="${originY + 4}" stroke="#cbd5e1"/>`;
+                axesHTML += `<text x="${px - 6}" y="${originY + 18}" font-size="10" fill="#64748b">${x}</text>`;
+            }
+        }
+
+        for (let y = 1; y <= 4; y++) {
+            let py = originY - y * scaleY;
+            axesHTML += `<line x1="${originX - 4}" y1="${py}" x2="${originX + 4}" y2="${py}" stroke="#cbd5e1"/>`;
+            axesHTML += `<text x="${originX - 20}" y="${py + 4}" font-size="10" fill="#64748b">${y}</text>`;
+        }
+
+        svg.innerHTML = axesHTML;
+
+        function plotCurve(base, color) {
+            let points = [];
+            for (let px = 20; px <= 380; px += 2) {
+                let x = (px - originX) / scaleX;
+                let y = Math.pow(base, x);
+                let py = originY - y * scaleY;
+                if (isFinite(y)) {
+                    points.push(`${px},${py}`);
+                }
+            }
+            if (points.length > 1) {
+                let polyline = document.createElementNS('http://www.w3.org/2000/svg', 'polyline');
+                polyline.setAttribute('points', points.join(' '));
+                polyline.setAttribute('fill', 'none');
+                polyline.setAttribute('stroke', color);
+                polyline.setAttribute('stroke-width', '2.5');
+                polyline.setAttribute('clip-path', `url(#${clipId})`);
+                svg.appendChild(polyline);
+            }
+        }
+
+        if (svgId === 'svgGraph2') {
+            plotCurve(a, '#0d9488');
+            let p0x = originX;
+            let p0y = originY - scaleY;
+            svg.innerHTML += `<circle cx="${p0x}" cy="${p0y}" r="4" fill="#1e3a8a"/><text x="${p0x + 8}" y="${p0y + 4}" font-size="11" fill="#1e3a8a">(0,1)</text>`;
+        } else if (svgId === 'svgGraph4') {
+            plotCurve(2, '#3b82f6');
+            plotCurve(3, '#ef4444');
+            svg.innerHTML += `<circle cx="${originX}" cy="${originY - scaleY}" r="4" fill="#1e3a8a"/>`;
+            svg.innerHTML += `<text x="250" y="40" font-size="11" fill="#3b82f6">f(x) = 2^x</text>`;
+            svg.innerHTML += `<text x="250" y="58" font-size="11" fill="#ef4444">g(x) = 3^x</text>`;
+        }
+    }
+
+    window.onload = function() {
+        drawExpGraph('svgGraph2', 2.0, 'clip2');
+        drawExpGraph('svgGraph4', 2.0, 'clip4');
+        updateProgress();
+    };
+
+    // Validador estricto exigido mediante regex completa
+    function parseStrictMathInput(val) {
+        if (val === null || val === undefined) return { valid: false, value: NaN };
+        val = String(val).trim().toLowerCase();
+        if (val === '') return { valid: false, value: NaN };
+
+        const strictRegex = /^-?(?:\d+(?:\.\d+)?|\d*\/\d+)$/;
+        if (!strictRegex.test(val)) {
+            return { valid: false, value: NaN };
+        }
+
+        if (val.includes('/')) {
+            let parts = val.split('/');
+            if (parts.length !== 2) return { valid: false, value: NaN };
+            let num = Number(parts[0]);
+            let den = Number(parts[1]);
+            if (isNaN(num) || isNaN(den) || den === 0 || !isFinite(num) || !isFinite(den)) {
+                return { valid: false, value: NaN };
+            }
+            return { valid: true, value: num / den };
+        }
+
+        let num = Number(val);
+        if (isNaN(num) || !isFinite(num)) {
+            return { valid: false, value: NaN };
+        }
+        return { valid: true, value: num };
+    }
+
+    function validateChallenge(num) {
+        const feedbackEl = document.getElementById(`feedback-${num}`);
+        let stats = challengeStats[num];
+        stats.checks++;
+
+        let syntaxErrorsCount = 0;
+        let mathErrorsCount = 0;
+        let totalComponentsInChallenge = 0;
+        let currentlyCorrectCount = 0;
+
+        if (num === 1) {
+            let expectedVals = [0.125, 0.25, 0.5, 1, 2, 4, 8];
+            let tablePointsPerItem = 2.5 / 7;
+            totalComponentsInChallenge = 8; // 7 tabla + 1 patrón
+
+            for (let i = 1; i <= 7; i++) {
+                let raw = document.getElementById(`c1_v1`).value; // Nota: corregido abajo a c1_v${i}
+            }
+            // Corrección de selección de elementos de la tabla:
+            for (let i = 1; i <= 7; i++) {
+                let raw = document.getElementById(`c1_v${i}`).value;
+                let statObj = componentStats[1].vals[i-1];
+
+                if (raw.trim() !== '') {
+                    statObj.tried = true;
+                    let parsed = parseStrictMathInput(raw);
+                    if (!parsed.valid) {
+                        syntaxErrorsCount++;
+                        statObj.errors++;
+                    } else {
+                        let isCorrect = Math.abs(parsed.value - expectedVals[i-1]) < 0.001;
+                        if (isCorrect) {
+                            currentlyCorrectCount++;
+                            maxComponentScores[1].vals[i-1] = Math.max(maxComponentScores[1].vals[i-1], tablePointsPerItem);
+                        } else {
+                            mathErrorsCount++;
+                            statObj.errors++;
+                        }
+                    }
+                } else {
+                    mathErrorsCount++;
+                }
+            }
+
+            let qPattern = document.getElementById('c1_q_pattern').value;
+            let patternStat = componentStats[1].pattern;
+            if (qPattern !== '') {
+                patternStat.tried = true;
+                if (qPattern === 'multiplica') {
+                    currentlyCorrectCount++;
+                    maxComponentScores[1].pattern = Math.max(maxComponentScores[1].pattern, 1.5);
+                } else {
+                    mathErrorsCount++;
+                    patternStat.errors++;
+                }
+            } else {
+                mathErrorsCount++;
+            }
+
+            if (syntaxErrorsCount > 0) {
+                feedbackEl.className = "feedback error";
+                feedbackEl.innerHTML = `<strong>Error de sintaxis:</strong> Revisa el formato en la tabla. Usa números o fracciones válidas (ej. 1/8).`;
+                return;
+            }
+
+        } else if (num === 2) {
+            totalComponentsInChallenge = 2;
+            let qBehavior = document.getElementById('c2_q_behavior').value;
+            let rangeExplored = (exploredLessThan1 && exploredGreaterThan1);
+            let behaviorCorrect = (qBehavior === 'ambos');
+
+            let expStat = componentStats[2].exploration;
+            let behStat = componentStats[2].behavior;
+
+            if (rangeExplored) {
+                expStat.tried = true;
+                currentlyCorrectCount++;
+                maxComponentScores[2].exploration = Math.max(maxComponentScores[2].exploration, 1.5);
+            } else {
+                expStat.tried = true;
+                mathErrorsCount++;
+                expStat.errors++;
+            }
+
+            if (qBehavior !== '') {
+                behStat.tried = true;
+                if (behaviorCorrect) {
+                    currentlyCorrectCount++;
+                    maxComponentScores[2].behavior = Math.max(maxComponentScores[2].behavior, 2.5);
+                } else {
+                    mathErrorsCount++;
+                    behStat.errors++;
+                }
+            } else {
+                mathErrorsCount++;
+            }
+
+        } else if (num === 3) {
+            totalComponentsInChallenge = 2;
+            let validOpt = document.querySelector('input[name="c3_valid"]:checked');
+            let justOpt = document.getElementById('c3_justification').value;
+
+            let validStat = componentStats[3].valid;
+            let justStat = componentStats[3].justification;
+
+            if (validOpt) {
+                validStat.tried = true;
+                if (validOpt.value === 'no') {
+                    currentlyCorrectCount++;
+                    maxComponentScores[3].valid = Math.max(maxComponentScores[3].valid, 1.5);
+                } else {
+                    mathErrorsCount++;
+                    validStat.errors++;
+                }
+            } else {
+                mathErrorsCount++;
+            }
+
+            if (justOpt !== '') {
+                justStat.tried = true;
+                if (justOpt === 'j1') {
+                    currentlyCorrectCount++;
+                    maxComponentScores[3].justification = Math.max(maxComponentScores[3].justification, 2.5);
+                } else {
+                    mathErrorsCount++;
+                    justStat.errors++;
+                }
+            } else {
+                mathErrorsCount++;
+            }
+
+        } else if (num === 4) {
+            totalComponentsInChallenge = 2;
+            let compOpt = document.getElementById('c4_comp').value;
+            let valCalcRaw = document.getElementById('c4_val_calc').value;
+            let valCalcParsed = parseStrictMathInput(valCalcRaw);
+
+            let compStat = componentStats[4].comp;
+            let calcStat = componentStats[4].calc;
+
+            if (valCalcRaw.trim() !== '' && !valCalcParsed.valid) {
+                feedbackEl.className = "feedback error";
+                feedbackEl.innerHTML = `<strong>Error de sintaxis:</strong> El cálculo de la razón debe tener un formato válido (ej. 9/4 o 2.25).`;
+                return;
+            }
+
+            if (compOpt !== '') {
+                compStat.tried = true;
+                if (compOpt === 'g_crece_mas') {
+                    currentlyCorrectCount++;
+                    maxComponentScores[4].comp = Math.max(maxComponentScores[4].comp, 2.5);
+                } else {
+                    mathErrorsCount++;
+                    compStat.errors++;
+                }
+            } else {
+                mathErrorsCount++;
+            }
+
+            if (valCalcRaw.trim() !== '') {
+                calcStat.tried = true;
+                if (valCalcParsed.valid && Math.abs(valCalcParsed.value - 2.25) < 0.01) {
+                    currentlyCorrectCount++;
+                    maxComponentScores[4].calc = Math.max(maxComponentScores[4].calc, 1.5);
+                } else {
+                    mathErrorsCount++;
+                    calcStat.errors++;
+                }
+            } else {
+                mathErrorsCount++;
+            }
+
+        } else if (num === 5) {
+            totalComponentsInChallenge = 4;
+            let modelOpt = document.getElementById('c5_model').value;
+            let v1Raw = document.getElementById('c5_v1').value;
+            let v2Raw = document.getElementById('c5_v2').value;
+            let v1Parsed = parseStrictMathInput(v1Raw);
+            let v2Parsed = parseStrictMathInput(v2Raw);
+            let qJust = document.getElementById('c5_q_just').value;
+
+            let mStat = componentStats[5].model;
+            let v1Stat = componentStats[5].v1;
+            let v2Stat = componentStats[5].v2;
+            let jStat = componentStats[5].just;
+
+            if ((v1Raw.trim() !== '' && !v1Parsed.valid) || (v2Raw.trim() !== '' && !v2Parsed.valid)) {
+                feedbackEl.className = "feedback error";
+                feedbackEl.innerHTML = `<strong>Error de sintaxis:</strong> Los campos de cálculo deben ser numéricos válidos.`;
+                return;
+            }
+
+            if (modelOpt !== '') {
+                mStat.tried = true;
+                if (modelOpt === 'm2') {
+                    currentlyCorrectCount++;
+                    maxComponentScores[5].model = Math.max(maxComponentScores[5].model, 1.0);
+                } else {
+                    mathErrorsCount++;
+                    mStat.errors++;
+                }
+            } else { mathErrorsCount++; }
+
+            if (v1Raw.trim() !== '') {
+                v1Stat.tried = true;
+                if (v1Parsed.valid && Math.abs(v1Parsed.value - 1600) < 1) {
+                    currentlyCorrectCount++;
+                    maxComponentScores[5].v1 = Math.max(maxComponentScores[5].v1, 1.0);
+                } else { mathErrorsCount++; v1Stat.errors++; }
+            } else { mathErrorsCount++; }
+
+            if (v2Raw.trim() !== '') {
+                v2Stat.tried = true;
+                if (v2Parsed.valid && Math.abs(v2Parsed.value - 1280) < 1) {
+                    currentlyCorrectCount++;
+                    maxComponentScores[5].v2 = Math.max(maxComponentScores[5].v2, 1.0);
+                } else { mathErrorsCount++; v2Stat.errors++; }
+            } else { mathErrorsCount++; }
+
+            if (qJust !== '') {
+                jStat.tried = true;
+                if (qJust === 'j_desc_porc') {
+                    currentlyCorrectCount++;
+                    maxComponentScores[5].just = Math.max(maxComponentScores[5].just, 1.0);
+                } else { mathErrorsCount++; jStat.errors++; }
+            } else { mathErrorsCount++; }
+        }
+
+        let currentChScore = 0;
+        let comps = maxComponentScores[num];
+        for (let key in comps) {
+            if (Array.isArray(comps[key])) {
+                currentChScore += comps[key].reduce((a, b) => a + b, 0);
+            } else {
+                currentChScore += comps[key];
+            }
+        }
+
+        let isFullyCorrect = (currentlyCorrectCount === totalComponentsInChallenge);
+
+        if (isFullyCorrect) {
+            challengeStatus[num] = 'completado';
+            feedbackEl.className = "feedback success";
+            feedbackEl.innerHTML = `<strong>¡Excelente! Desafío completado (${currentChScore.toFixed(1)} / 4.0 pts).</strong> Fundamento matemático: Has demostrado solidez en la argumentación y modelación según el CNEB.`;
+        } else {
+            challengeStatus[num] = 'en_proceso';
+            let checkCount = stats.checks;
+            let guidance = "";
+            if (checkCount === 1) {
+                guidance = "💡 Pista orientadora: Revisa los componentes marcados. Recuerda que los exponentes negativos representan recíprocos y el cambio exponencial es multiplicativo.";
+            } else if (checkCount === 2) {
+                guidance = "📝 Guía de procedimiento: Verifica las potencias con exponentes negativos a^(-n) = 1/a^n. Para el decaimiento, aplica el factor acumulativo sobre el valor del período anterior.";
+            } else {
+                guidance = "🔍 Explicación detallada: En f(x) = 2^x, el aumento es proporcional al valor actual (multiplicativo). En la depreciación, el 20% se calcula sobre el saldo actualizado del año previo.";
+            }
+            feedbackEl.className = "feedback warning";
+            feedbackEl.innerHTML = `<strong>Progreso parcial (${currentChScore.toFixed(1)} / 4.0 pts).</strong> ${guidance}`;
+        }
+
+        updateProgress();
+    }
+
+    function promptResetChallenge(num) {
+        if (confirm(`¿Estás seguro de que deseas reiniciar el Desafío ${num}? Se borrará tu progreso en esta actividad.`)) {
+            resetChallenge(num);
+        }
+    }
+
+    function resetChallenge(num) {
+        challengeStats[num] = { checks: 0 };
+        challengeStatus[num] = 'pendiente';
+        
+        if (num === 1) {
+            maxComponentScores[1] = { vals: [0,0,0,0,0,0,0], pattern: 0 };
+            componentStats[1] = { vals: [ {tried:false, errors:0}, {tried:false, errors:0}, {tried:false, errors:0}, {tried:false, errors:0}, {tried:false, errors:0}, {tried:false, errors:0}, {tried:false, errors:0} ], pattern: {tried:false, errors:0} };
+            for(let i=1; i<=7; i++) document.getElementById(`c1_v${i}`).value = '';
+            document.getElementById('c1_q_pattern').selectedIndex = 0;
+        } else if (num === 2) {
+            maxComponentScores[2] = { exploration: 0, behavior: 0 };
+            componentStats[2] = { exploration: {tried:false, errors:0}, behavior: {tried:false, errors:0} };
+            document.getElementById('baseSlider').value = 2.0;
+            exploredLessThan1 = false;
+            exploredGreaterThan1 = false;
+            updateGraph2();
+            document.getElementById('c2_q_behavior').selectedIndex = 0;
+        } else if (num === 3) {
+            maxComponentScores[3] = { valid: 0, justification: 0 };
+            componentStats[3] = { valid: {tried:false, errors:0}, justification: {tried:false, errors:0} };
+            document.querySelectorAll('input[name="c3_valid"]').forEach(r => r.checked = false);
+            document.getElementById('c3_justification').selectedIndex = 0;
+        } else if (num === 4) {
+            maxComponentScores[4] = { comp: 0, calc: 0 };
+            componentStats[4] = { comp: {tried:false, errors:0}, calc: {tried:false, errors:0} };
+            document.getElementById('c4_comp').selectedIndex = 0;
+            document.getElementById('c4_val_calc').value = '';
+        } else if (num === 5) {
+            maxComponentScores[5] = { model: 0, v1: 0, v2: 0, just: 0 };
+            componentStats[5] = { model: {tried:false, errors:0}, v1: {tried:false, errors:0}, v2: {tried:false, errors:0}, just: {tried:false, errors:0} };
+            document.getElementById('c5_model').selectedIndex = 0;
+            document.getElementById('c5_v1').value = '';
+            document.getElementById('c5_v2').value = '';
+            document.getElementById('c5_q_just').selectedIndex = 0;
+        }
+
+        const feedbackEl = document.getElementById(`feedback-${num}`);
+        feedbackEl.className = "feedback";
+        feedbackEl.innerHTML = "";
+        updateProgress();
+    }
+
+    function promptResetLab() {
+        if (confirm("¿Estás seguro de reiniciar todo el laboratorio? Se borrará todo tu progreso, respuestas y puntajes acumulados.")) {
+            restartLab();
+        }
+    }
+
+    function restartLab() {
+        for (let i = 1; i <= 5; i++) {
+            resetChallenge(i);
+        }
+        document.getElementById('summaryCard').classList.remove('active');
+        showCard(1);
+    }
+
+    function generateSummaryReport() {
+        let totalScore = calculateTotalMaxScore();
+        document.getElementById('finalScoreDisplay').innerText = `${totalScore.toFixed(1)} / 20.0 pts`;
+
+        let completedCount = Object.values(challengeStatus).filter(s => s === 'completado').length;
+        let pendingCount = Object.values(challengeStatus).filter(s => s === 'pendiente').length;
+        let partialCount = Object.values(challengeStatus).filter(s => s === 'en_proceso').length;
+
+        let warningEl = document.getElementById('pendingWarning');
+        if (pendingCount > 0 || partialCount > 0) {
+            warningEl.style.display = 'block';
+            warningEl.innerText = `⚠️ Advertencia: Hay ${pendingCount} desafío(s) pendiente(s) y ${partialCount} en proceso. El informe muestra el diagnóstico formativo actual.`;
+        } else {
+            warningEl.style.display = 'none';
+        }
+
+        let strengths = [];
+        let specificDifficulties = [];
+
+        let c1TableSum = maxComponentScores[1].vals.reduce((a,b)=>a+b,0);
+        if (c1TableSum >= 2.4) strengths.push("Tabulación rigurosa y cálculo correcto de exponentes negativos en f(x) = 2^x.");
+        else if (componentStats[1].vals.some(v => v.tried)) specificDifficulties.c1_table = "Cálculo de valores en la tabla de potencias (exponentes negativos o enteros).";
+
+        if (maxComponentScores[1].pattern >= 1.4) strengths.push("Comprensión clara del patrón multiplicativo en funciones exponenciales.");
+        else if (componentStats[1].pattern.tried) specificDifficulties.c1_pat = "Justificación del patrón multiplicativo frente a incrementos aditivos.";
+
+        if (maxComponentScores[2].exploration >= 1.4) strengths.push("Exploración efectiva de rangos de bases para crecimiento y decaimiento.");
+        else if (componentStats[2].exploration.tried) specificDifficulties.c2_exp = "Exploración completa de bases menores y mayores que 1 en la gráfica.";
+
+        if (maxComponentScores[2].behavior >= 2.4) strengths.push("Interpretación gráfica del crecimiento y decaimiento exponencial.");
+        else if (componentStats[2].behavior.tried) specificDifficulties.c2_beh = "Distinción analítica entre funciones crecientes y decrecientes según la base.";
+
+        let c3Total = maxComponentScores[3].valid + maxComponentScores[3].justification;
+        if (c3Total >= 3.9) strengths.push("Refutación adecuada de afirmaciones lineales erróneas mediante contraejemplos.");
+        else if (componentStats[3].valid.tried || componentStats[3].justification.tried) specificDifficulties.c3 = "Construcción de contraejemplos para refutar modelos lineales aplicados al cambio exponencial.";
+
+        let c4Total = maxComponentScores[4].comp + maxComponentScores[4].calc;
+        if (c4Total >= 3.9) strengths.push("Comparación avanzada de tasas de cambio y cálculo preciso de razones entre exponenciales.");
+        else if (componentStats[4].comp.tried || componentStats[4].calc.tried) specificDifficulties.c4 = "Análisis comparativo de la velocidad de crecimiento entre f(x) = 2^x y g(x) = 3^x.";
+
+        let c5Total = maxComponentScores[5].model + maxComponentScores[5].v1 + maxComponentScores[5].v2 + maxComponentScores[5].just;
+        if (c5Total >= 3.9) strengths.push("Modelación financiera exitosa y comprensión de la depreciación porcentual decreciente.");
+        else if (Object.values(componentStats[5]).some(s => s.tried)) specificDifficulties.c5 = "Modelación y aplicación sucesiva de factores de decaimiento porcentual (depreciación).";
+
+        let recHtml = "";
+        if (Object.keys(specificDifficulties).length > 0) {
+            for (let key in specificDifficulties) {
+                recHtml += `<li>Reforzar: ${specificDifficulties[key]}</li>`;
+            }
+        } else if (completedCount === 0) {
+            recHtml = "<li>Aún no se han completado actividades. Comienza explorando los desafíos para recibir un diagnóstico personalizado.</li>";
+        } else {
+            recHtml = "<li>¡Excelente desempeño! Has demostrado dominio integral de los conceptos del CNEB evaluados.</li>";
+        }
+
+        let strengthHtml = strengths.length > 0 ? strengths.map(s => `<li>${s}</li>`).join('') : '<li>En proceso de consolidación de fortalezas.</li>';
+        let totalChecks = Object.values(challengeStats).reduce((a,b)=>a+b.checks,0);
+
+        let summaryListHTML = `
+            <li><strong>Puntaje acumulado histórico:</strong> ${totalScore.toFixed(1)} / 20.0 pts.</li>
+            <li><strong>Desafíos:</strong> ${completedCount} completados, ${partialCount} en proceso, ${pendingCount} pendientes.</li>
+            <li><strong>Comprobaciones realizadas:</strong> ${totalChecks}.</li>
+            <li><strong>Fortalezas demostradas:</strong><ul>${strengthHtml}</ul></li>
+            <li><strong>Recomendaciones específicas de refuerzo:</strong><ul>${recHtml}</ul></li>
+        `;
+        document.getElementById('summaryList').innerHTML = summaryListHTML;
+    }
+</script>
+
+</body>
+</html>
